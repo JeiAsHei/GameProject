@@ -3,7 +3,7 @@ var OregonH = OregonH || {};
 OregonH.Event = {};
 
 OregonH.Event.eventTypes = [
-  {
+  /* {
     type: 'STAT-CHANGE',
     notification: 'negative',
     stat: 'crew',
@@ -44,7 +44,7 @@ OregonH.Event.eventTypes = [
     stat: 'food',
     value: 20,
     text: 'Found wild berries. Food added: '
-  },
+  }, */
   {
     type: 'STAT-CHANGE',
     notification: 'positive',
@@ -91,7 +91,36 @@ OregonH.Event.eventTypes = [
       {item: 'firepower', qty: 2, price: 80},
       {item: 'crew', qty: 5, price: 60}
     ]
-  },
+    },
+    {
+     type: 'CALM',
+     notification: 'neutral',
+     text: 'You have found calm area. Rest and look at your inventory OR push forward.',
+     //inventory code?
+    },
+    {
+        type: 'CALM',
+        notification: 'neutral',
+        text: 'You have found calm area. Rest and look at your inventory OR push forward.',
+        //inventory code?
+    },
+    {
+        type: 'CALM',
+        notification: 'neutral',
+        text: 'You have found calm area. Rest and look at your inventory OR push forward.',
+        //inventory code?
+    },
+    {
+        type: 'CALM',
+        notification: 'neutral',
+        text: 'You have found calm area. Rest and look at your inventory OR push forward.',
+        //inventory code?
+    },
+  {
+    type: 'ATTACK',
+    notification: 'negative',
+    text: 'Bandits are attacking you'
+  }, /*
   {
     type: 'ATTACK',
     notification: 'negative',
@@ -101,12 +130,7 @@ OregonH.Event.eventTypes = [
     type: 'ATTACK',
     notification: 'negative',
     text: 'Bandits are attacking you'
-  },
-  {
-    type: 'ATTACK',
-    notification: 'negative',
-    text: 'Bandits are attacking you'
-  }
+  } */
 ];
 
 OregonH.Event.generateEvent = function(){
@@ -129,6 +153,18 @@ OregonH.Event.generateEvent = function(){
 
     //prepare event
     this.shopEvent(eventData);
+  }
+
+  //calm area
+  else if (eventData.type == 'CALM') {
+      //pause game
+      this.game.pauseJourney();
+
+      //notify user
+      this.ui.notify(eventData.text, eventData.notification);
+
+      //prepare event
+      this.calmEvent(eventData);
   }
 
   //attacks

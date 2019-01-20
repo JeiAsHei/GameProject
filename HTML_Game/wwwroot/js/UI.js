@@ -76,6 +76,35 @@ OregonH.UI.showShop = function(products){
   //document.getElementsByClassName('product').addEventListener(OregonH.UI.buyProduct);
 };
 
+//show calm area
+OregonH.UI.showCalm = function (options) {
+
+    //get calm area
+    var calmDiv = document.getElementById('calm');
+    calmDiv.classList.remove('hidden');
+
+    //init the shop just once
+    if (!this.calmInitiated) {
+
+        //event delegation
+        calmDiv.addEventListener('click', function (e) {
+            //what was clicked
+            var target = e.target || e.src;
+
+            //exit button
+            if (target.tagName == 'BUTTON') {
+                //resume journey
+                calmDiv.classList.add('hidden');
+                OregonH.UI.game.resumeJourney();
+            }
+
+        }); 
+
+            this.shopInitiated = true;
+        }
+
+        };
+
 //buy product
 OregonH.UI.buyProduct = function(product) {
   //check we can afford it
