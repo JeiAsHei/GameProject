@@ -44,7 +44,7 @@ OregonH.Event.eventTypes = [
     stat: 'food',
     value: 20,
     text: 'Found wild berries. Food added: '
-  }, */
+  }, 
   {
     type: 'STAT-CHANGE',
     notification: 'positive',
@@ -91,7 +91,7 @@ OregonH.Event.eventTypes = [
       {item: 'firepower', qty: 2, price: 80},
       {item: 'crew', qty: 5, price: 60}
     ]
-    },
+    }, */
     {
      type: 'CALM',
      notification: 'neutral',
@@ -219,4 +219,11 @@ OregonH.Event.attackEvent = function(eventData){
   var gold = Math.round((0.7 + 0.6 * Math.random()) * OregonH.ENEMY_GOLD_AVG);
 
   this.ui.showAttack(firepower, gold);
+};
+
+OregonH.Event.calmEvent = function (eventData) {
+    //var firepower = Math.round((0.7 + 0.6 * Math.random()) * OregonH.ENEMY_FIREPOWER_AVG);
+    //var gold = Math.round((0.7 + 0.6 * Math.random()) * OregonH.ENEMY_GOLD_AVG);
+
+    this.ui.showCalm();
 };

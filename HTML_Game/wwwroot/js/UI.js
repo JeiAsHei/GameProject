@@ -77,7 +77,7 @@ OregonH.UI.showShop = function(products){
 };
 
 //show calm area
-OregonH.UI.showCalm = function (options) {
+OregonH.UI.showCalm = function () {
 
     //get calm area
     var calmDiv = document.getElementById('calm');
