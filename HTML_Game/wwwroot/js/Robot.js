@@ -1,33 +1,33 @@
-var OregonH = OregonH || {};
+var PostApoc = PostApoc || {};
 
-OregonH.Caravan = {};
+PostApoc.Robot = {};
 
-OregonH.Caravan.init = function(stats){
+PostApoc.Robot.init = function(stats){
   this.day = stats.day;
   this.distance = stats.distance;
-  this.crew = stats.crew;
+  this.vitality = stats.vitality;
   this.food = stats.food;
-  this.oxen = stats.oxen;
+  this.strength = stats.strength;
   this.money = stats.money;
   this.firepower = stats.firepower;
 };
 
 //update weight and capacity
-OregonH.Caravan.updateWeight = function(){
+PostApoc.Robot.updateWeight = function(){
   var droppedFood = 0;
   var droppedGuns = 0;
 
-  //how much can the caravan carry
-  this.capacity = this.oxen * OregonH.WEIGHT_PER_OX + this.crew * OregonH.WEIGHT_PER_PERSON;
+  //how much can the Robot carry
+  this.capacity = this.strength * PostApoc.WEIGHT_PER_BOX + this.vitality * PostApoc.WEIGHT_PER_SIZE;
 
   //how much weight do we currently have
-  this.weight = this.food * OregonH.FOOD_WEIGHT + this.firepower * OregonH.FIREPOWER_WEIGHT;
+  this.weight = this.food * PostApoc.FOOD_WEIGHT + this.firepower * PostApoc.FIREPOWER_WEIGHT;
 
   //drop things behind if it's too much weight
   //assume guns get dropped before food
   while(this.firepower && this.capacity <= this.weight) {
     this.firepower--;
-    this.weight -= OregonH.FIREPOWER_WEIGHT;
+    this.weight -= PostApoc.FIREPOWER_WEIGHT;
     droppedGuns++;
   }
 
@@ -37,7 +37,7 @@ OregonH.Caravan.updateWeight = function(){
 
   while(this.food && this.capacity <= this.weight) {
     this.food--;
-    this.weight -= OregonH.FOOD_WEIGHT;
+    this.weight -= PostApoc.FOOD_WEIGHT;
     droppedFood++;
   }
 
@@ -47,18 +47,20 @@ OregonH.Caravan.updateWeight = function(){
 };
 
 //update covered distance
-OregonH.Caravan.updateDistance = function() {
+PostApoc.Robot.updateDistance = function() {
   //the closer to capacity, the slower
   var diff = this.capacity - this.weight;
-  var speed = OregonH.SLOW_SPEED + diff/this.capacity * OregonH.FULL_SPEED;
+  var speed = PostApoc.SLOW_SPEED + diff/this.capacity * PostApoc.FULL_SPEED;
   this.distance += speed;
 };
 
+/*
 //food consumption
-OregonH.Caravan.consumeFood = function() {
-  this.food -= this.crew * OregonH.FOOD_PER_PERSON;
+PostApoc.Robot.consumeFood = function() {
+  this.food -= this.vitality * PostApoc.FOOD_PER_SIZE;
 
   if(this.food < 0) {
     this.food = 0;
   }
 };
+*/

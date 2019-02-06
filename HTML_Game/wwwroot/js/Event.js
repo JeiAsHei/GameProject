@@ -1,21 +1,22 @@
-var OregonH = OregonH || {};
+/// <reference path="robot.js" />
+var PostApoc = PostApoc || {};
 
-OregonH.Event = {};
+PostApoc.Event = {};
 
-OregonH.Event.eventTypes = [
-  /* {
+PostApoc.Event.eventTypes = [
+   {
     type: 'STAT-CHANGE',
     notification: 'negative',
-    stat: 'crew',
-    value: -3,
-    text: 'Food intoxication. Casualties: '
+    stat: 'vitality',
+    value: -1,
+    text: 'Hit your toe on a rock. vitality Lost: '
   },
   {
     type: 'STAT-CHANGE',
     notification: 'negative',
-    stat: 'crew',
-    value: -4,
-    text: 'Flu outbreak. Casualties: '
+    stat: 'vitality',
+    value: -3,
+    text: 'Walked to a lamp post, in the middle of wasteland. vitality Lost: '
   },
   {
     type: 'STAT-CHANGE',
@@ -34,9 +35,9 @@ OregonH.Event.eventTypes = [
   {
     type: 'STAT-CHANGE',
     notification: 'negative',
-    stat: 'oxen',
+    stat: 'strength',
     value: -1,
-    text: 'Ox flu outbreak. Casualties: '
+    text: 'BOX flu outbreak. Casualties: '
   },
   {
     type: 'STAT-CHANGE',
@@ -55,9 +56,9 @@ OregonH.Event.eventTypes = [
   {
     type: 'STAT-CHANGE',
     notification: 'positive',
-    stat: 'oxen',
+    stat: 'strength',
     value: 1,
-    text: 'Found wild oxen. New oxen: '
+    text: 'Found wild strength. New strength: '
   },
   {
     type: 'SHOP',
@@ -65,9 +66,9 @@ OregonH.Event.eventTypes = [
     text: 'You have found a shop',
     products: [
       {item: 'food', qty: 20, price: 50},
-      {item: 'oxen', qty: 1, price: 200},
+      {item: 'strength', qty: 1, price: 200},
       {item: 'firepower', qty: 2, price: 50},
-      {item: 'crew', qty: 5, price: 80}
+      {item: 'vitality', qty: 5, price: 80}
     ]
   },
   {
@@ -76,9 +77,9 @@ OregonH.Event.eventTypes = [
     text: 'You have found a shop',
     products: [
       {item: 'food', qty: 30, price: 50},
-      {item: 'oxen', qty: 1, price: 200},
+      {item: 'strength', qty: 1, price: 200},
       {item: 'firepower', qty: 2, price: 20},
-      {item: 'crew', qty: 10, price: 80}
+      {item: 'vitality', qty: 10, price: 80}
     ]
   },
   {
@@ -87,11 +88,11 @@ OregonH.Event.eventTypes = [
     text: 'Smugglers sell various goods',
     products: [
       {item: 'food', qty: 20, price: 60},
-      {item: 'oxen', qty: 1, price: 300},
+      {item: 'strength', qty: 1, price: 300},
       {item: 'firepower', qty: 2, price: 80},
-      {item: 'crew', qty: 5, price: 60}
+      {item: 'vitality', qty: 5, price: 60}
     ]
-    }, */
+    },
     {
      type: 'CALM',
      notification: 'neutral',
@@ -120,7 +121,7 @@ OregonH.Event.eventTypes = [
     type: 'ATTACK',
     notification: 'negative',
     text: 'Bandits are attacking you'
-  }, /*
+  },
   {
     type: 'ATTACK',
     notification: 'negative',
@@ -130,10 +131,10 @@ OregonH.Event.eventTypes = [
     type: 'ATTACK',
     notification: 'negative',
     text: 'Bandits are attacking you'
-  } */
+  }
 ];
 
-OregonH.Event.generateEvent = function(){
+PostApoc.Event.generateEvent = function(){
   //pick random one
   var eventIndex = Math.floor(Math.random() * this.eventTypes.length);
   var eventData = this.eventTypes[eventIndex];
@@ -180,15 +181,15 @@ OregonH.Event.generateEvent = function(){
   }
 };
 
-OregonH.Event.stateChangeEvent = function(eventData) {
+PostApoc.Event.stateChangeEvent = function(eventData) {
   //can't have negative quantities
-  if(eventData.value + this.caravan[eventData.stat] >= 0) {
-    this.caravan[eventData.stat] += eventData.value;
+  if(eventData.value + this.Robot[eventData.stat] >= 0) {
+    this.Robot[eventData.stat] += eventData.value;
     this.ui.notify(eventData.text + Math.abs(eventData.value), eventData.notification);
   }
 };
 
-OregonH.Event.shopEvent = function(eventData) {
+PostApoc.Event.shopEvent = function(eventData) {
   //number of products for sale
   var numProds = Math.ceil(Math.random() * 4);
 
@@ -214,16 +215,16 @@ OregonH.Event.shopEvent = function(eventData) {
 };
 
 //prepare an attack event
-OregonH.Event.attackEvent = function(eventData){
-  var firepower = Math.round((0.7 + 0.6 * Math.random()) * OregonH.ENEMY_FIREPOWER_AVG);
-  var gold = Math.round((0.7 + 0.6 * Math.random()) * OregonH.ENEMY_GOLD_AVG);
+PostApoc.Event.attackEvent = function(eventData){
+  var firepower = Math.round((0.7 + 0.6 * Math.random()) * PostApoc.ENEMY_FIREPOWER_AVG);
+  var gold = Math.round((0.7 + 0.6 * Math.random()) * PostApoc.ENEMY_GOLD_AVG);
 
   this.ui.showAttack(firepower, gold);
 };
 
-OregonH.Event.calmEvent = function (eventData) {
-    //var firepower = Math.round((0.7 + 0.6 * Math.random()) * OregonH.ENEMY_FIREPOWER_AVG);
-    //var gold = Math.round((0.7 + 0.6 * Math.random()) * OregonH.ENEMY_GOLD_AVG);
+PostApoc.Event.calmEvent = function (eventData) {
+    //var firepower = Math.round((0.7 + 0.6 * Math.random()) * PostApoc.ENEMY_FIREPOWER_AVG);
+    //var gold = Math.round((0.7 + 0.6 * Math.random()) * PostApoc.ENEMY_GOLD_AVG);
 
     this.ui.showCalm();
 };

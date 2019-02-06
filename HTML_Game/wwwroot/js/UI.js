@@ -1,30 +1,30 @@
-var OregonH = OregonH || {};
+var PostApoc = PostApoc || {};
 
-OregonH.UI = {};
+PostApoc.UI = {};
 
 //show a notification in the message area
-OregonH.UI.notify = function(message, type){
-  document.getElementById('updates-area').innerHTML = '<div class="update-' + type + '">Day '+ Math.ceil(this.caravan.day) + ': ' + message+'</div>' + document.getElementById('updates-area').innerHTML;
+PostApoc.UI.notify = function(message, type){
+  document.getElementById('updates-area').innerHTML = '<div class="update-' + type + '">Day '+ Math.ceil(this.Robot.day) + ': ' + message+'</div>' + document.getElementById('updates-area').innerHTML;
 };
 
-//refresh visual caravan stats
-OregonH.UI.refreshStats = function() {
+//refresh visual Robot stats
+PostApoc.UI.refreshStats = function() {
   //modify the dom
-  document.getElementById('stat-day').innerHTML = Math.ceil(this.caravan.day);
-  document.getElementById('stat-distance').innerHTML = Math.floor(this.caravan.distance);
-  document.getElementById('stat-crew').innerHTML = this.caravan.crew;
-  document.getElementById('stat-oxen').innerHTML = this.caravan.oxen;
-  document.getElementById('stat-food').innerHTML = Math.ceil(this.caravan.food);
-  document.getElementById('stat-money').innerHTML = this.caravan.money;
-  document.getElementById('stat-firepower').innerHTML = this.caravan.firepower;
-  document.getElementById('stat-weight').innerHTML = Math.ceil(this.caravan.weight) + '/' + this.caravan.capacity;
+  document.getElementById('stat-day').innerHTML = Math.ceil(this.Robot.day);
+  document.getElementById('stat-distance').innerHTML = Math.floor(this.Robot.distance);
+  document.getElementById('stat-vitality').innerHTML = this.Robot.vitality;
+  document.getElementById('stat-strength').innerHTML = this.Robot.strength;
+  document.getElementById('stat-food').innerHTML = Math.ceil(this.Robot.food);
+  document.getElementById('stat-money').innerHTML = this.Robot.money;
+  document.getElementById('stat-firepower').innerHTML = this.Robot.firepower;
+  document.getElementById('stat-weight').innerHTML = Math.ceil(this.Robot.weight) + '/' + this.Robot.capacity;
 
-  //update caravan position
-  document.getElementById('caravan').style.left = (380 * this.caravan.distance/OregonH.FINAL_DISTANCE) + 'px';
+  //update Robot position
+  document.getElementById('Robot').style.left = (380 * this.Robot.distance/PostApoc.FINAL_DISTANCE) + 'px';
 };
 
 //show shop
-OregonH.UI.showShop = function(products){
+PostApoc.UI.showShop = function(products){
 
   //get shop area
   var shopDiv = document.getElementById('shop');
@@ -42,13 +42,13 @@ OregonH.UI.showShop = function(products){
       if(target.tagName == 'BUTTON') {
         //resume journey
         shopDiv.classList.add('hidden');
-        OregonH.UI.game.resumeJourney();
+        PostApoc.UI.game.resumeJourney();
       }
       else if(target.tagName == 'DIV' && target.className.match(/product/)) {
 
         console.log('buying')
 
-        var bought = OregonH.UI.buyProduct({
+        var bought = PostApoc.UI.buyProduct({
           item: target.getAttribute('data-item'),
           qty: target.getAttribute('data-qty'),
           price: target.getAttribute('data-price')
@@ -73,11 +73,11 @@ OregonH.UI.showShop = function(products){
   }
 
   //setup click event
-  //document.getElementsByClassName('product').addEventListener(OregonH.UI.buyProduct);
+  //document.getElementsByClassName('product').addEventListener(PostApoc.UI.buyProduct);
 };
 
 //show calm area
-OregonH.UI.showCalm = function () {
+PostApoc.UI.showCalm = function () {
 
     //get calm area
     var calmDiv = document.getElementById('calm');
@@ -95,7 +95,7 @@ OregonH.UI.showCalm = function () {
             if (target.tagName == 'BUTTON') {
                 //resume journey
                 calmDiv.classList.add('hidden');
-                OregonH.UI.game.resumeJourney();
+                PostApoc.UI.game.resumeJourney();
             }
 
         }); 
@@ -106,31 +106,31 @@ OregonH.UI.showCalm = function () {
         };
 
 //buy product
-OregonH.UI.buyProduct = function(product) {
+PostApoc.UI.buyProduct = function(product) {
   //check we can afford it
-  if(product.price > OregonH.UI.caravan.money) {
-    OregonH.UI.notify('Not enough money', 'negative');
+  if(product.price > PostApoc.UI.Robot.money) {
+    PostApoc.UI.notify('Not enough money', 'negative');
     return false;
   }
 
-  OregonH.UI.caravan.money -= product.price;
+  PostApoc.UI.Robot.money -= product.price;
 
-  OregonH.UI.caravan[product.item] += +product.qty;
+  PostApoc.UI.Robot[product.item] += +product.qty;
 
-  OregonH.UI.notify('Bought ' + product.qty + ' x ' + product.item, 'positive');
+  PostApoc.UI.notify('Bought ' + product.qty + ' x ' + product.item, 'positive');
 
   //update weight
-  OregonH.UI.caravan.updateWeight();
+  PostApoc.UI.Robot.updateWeight();
 
   //update visuals
-  OregonH.UI.refreshStats();
+  PostApoc.UI.refreshStats();
 
   return true;
 
 };
 
 //show attack
-OregonH.UI.showAttack = function(firepower, gold) {
+PostApoc.UI.showAttack = function(firepower, gold) {
   var attackDiv = document.getElementById('attack');
   attackDiv.classList.remove('hidden');
 
@@ -155,22 +155,22 @@ OregonH.UI.showAttack = function(firepower, gold) {
 };
 
 //fight
-OregonH.UI.fight = function(){
+PostApoc.UI.fight = function(){
 
   var firepower = this.firepower;
   var gold = this.gold;
 
-  var damage = Math.ceil(Math.max(0, firepower * 2 * Math.random() - this.caravan.firepower));
+  var damage = Math.ceil(Math.max(0, firepower * 2 * Math.random() - this.Robot.firepower));
 
   //check there are survivors
-  if(damage < this.caravan.crew) {
-    this.caravan.crew -= damage;
-    this.caravan.money += gold;
+  if(damage < this.Robot.vitality) {
+    this.Robot.vitality -= damage;
+    this.Robot.money += gold;
     this.notify(damage + ' people were killed fighting', 'negative');
     this.notify('Found $' + gold, 'gold');
   }
   else {
-    this.caravan.crew = 0;
+    this.Robot.vitality = 0;
     this.notify('Everybody died in the fight', 'negative');
   }
 
@@ -180,20 +180,20 @@ OregonH.UI.fight = function(){
 };
 
 //runing away from enemy
-OregonH.UI.runaway = function(){
+PostApoc.UI.runaway = function(){
 
   var firepower = this.firepower;
 
   var damage = Math.ceil(Math.max(0, firepower * Math.random()/2));
 
   //check there are survivors
-  if(damage < this.caravan.crew) {
-    this.caravan.crew -= damage;
-    this.notify(damage + ' people were killed running', 'negative');
+  if(damage < this.Robot.vitality) {
+    this.Robot.vitality -= damage;
+    this.notify(' Shot in the ass and lost ' + damage + ' vitality, while running like a chicken', 'negative');
   }
   else {
-    this.caravan.crew = 0;
-    this.notify('Everybody died running away', 'negative');
+    this.Robot.vitality = 0;
+    this.notify('If (your.speed < bullet.speed) {you = dead};', 'negative');
   }
 
   //remove event listener

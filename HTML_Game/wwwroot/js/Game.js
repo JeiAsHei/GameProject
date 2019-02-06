@@ -1,53 +1,53 @@
-var OregonH = OregonH || {};
+var PostApoc = PostApoc || {};
 
 //constants
-OregonH.WEIGHT_PER_OX = 20;
-OregonH.WEIGHT_PER_PERSON = 2;
-OregonH.FOOD_WEIGHT = 0.6;
-OregonH.FIREPOWER_WEIGHT = 5;
-OregonH.GAME_SPEED = 800;
-OregonH.DAY_PER_STEP = 0.2;
-OregonH.FOOD_PER_PERSON = 0.02;
-OregonH.FULL_SPEED = 5;
-OregonH.SLOW_SPEED = 3;
-OregonH.FINAL_DISTANCE = 1000;
-OregonH.EVENT_PROBABILITY = 0.15;
-OregonH.ENEMY_FIREPOWER_AVG = 5;
-OregonH.ENEMY_GOLD_AVG = 50;
+PostApoc.WEIGHT_PER_BOX = 20;
+PostApoc.WEIGHT_PER_SIZE = 2;
+PostApoc.FOOD_WEIGHT = 0.6;
+PostApoc.FIREPOWER_WEIGHT = 5;
+PostApoc.GAME_SPEED = 800;
+PostApoc.DAY_PER_STEP = 0.2;
+PostApoc.FOOD_PER_SIZE = 0.02;
+PostApoc.FULL_SPEED = 5;
+PostApoc.SLOW_SPEED = 3;
+PostApoc.FINAL_DISTANCE = 1000;
+PostApoc.EVENT_PROBABILITY = 0.15;
+PostApoc.ENEMY_FIREPOWER_AVG = 5;
+PostApoc.ENEMY_GOLD_AVG = 5;
 
-OregonH.Game = {};
+PostApoc.Game = {};
 
 //initiate the game
-OregonH.Game.init = function(){
+PostApoc.Game.init = function(){
 
   //reference ui
-  this.ui = OregonH.UI;
+  this.ui = PostApoc.UI;
 
   //reference event manager
-  this.eventManager = OregonH.Event;
+  this.eventManager = PostApoc.Event;
 
-  //setup caravan
-  this.caravan = OregonH.Caravan;
-  this.caravan.init({
+  //setup Robot
+  this.Robot = PostApoc.Robot;
+  this.Robot.init({
     day: 0,
     distance: 0,
-    crew: 30,
+    vitality: 30,
     food: 80,
-    oxen: 2,
-    money: 300,
+    strength: 2,
+    money: 7,
     firepower: 2
   });
 
   //pass references
-  this.caravan.ui = this.ui;
-  this.caravan.eventManager = this.eventManager;
+  this.Robot.ui = this.ui;
+  this.Robot.eventManager = this.eventManager;
 
   this.ui.game = this;
-  this.ui.caravan = this.caravan;
+  this.ui.Robot = this.Robot;
   this.ui.eventManager = this.eventManager;
 
   this.eventManager.game = this;
-  this.eventManager.caravan = this.caravan;
+  this.eventManager.Robot = this.Robot;
   this.eventManager.ui = this.ui;
 
   //begin adventure!
@@ -55,16 +55,16 @@ OregonH.Game.init = function(){
 };
 
 //start the journey and time starts running
-OregonH.Game.startJourney = function() {
+PostApoc.Game.startJourney = function() {
   this.gameActive = true;
   this.previousTime = null;
-  this.ui.notify('A great adventure begins', 'positive');
+  this.ui.notify('Time to head home', 'positive');
 
   this.step();
 };
 
 //game loop
-OregonH.Game.step = function(timestamp) {
+PostApoc.Game.step = function(timestamp) {
 
   //starting, setup the previous time for the first time
   if(!this.previousTime){
@@ -76,7 +76,7 @@ OregonH.Game.step = function(timestamp) {
   var progress = timestamp - this.previousTime;
 
   //game update
-  if(progress >= OregonH.GAME_SPEED) {
+  if(progress >= PostApoc.GAME_SPEED) {
     this.previousTime = timestamp;
     this.updateGame();
   }
@@ -86,60 +86,60 @@ OregonH.Game.step = function(timestamp) {
 };
 
 //update game stats
-OregonH.Game.updateGame = function() {
+PostApoc.Game.updateGame = function() {
   //day update
-  this.caravan.day += OregonH.DAY_PER_STEP;
+  this.Robot.day += PostApoc.DAY_PER_STEP;
 
   //food consumption
-  this.caravan.consumeFood();
+  this.Robot.consumeFood();
 
-  if(this.caravan.food === 0) {
-    this.ui.notify('Your caravan starved to death', 'negative');
+  if(this.Robot.food === 0) {
+    this.ui.notify('Your Robot starved to death', 'negative');
     this.gameActive = false;
     return;
   }
 
   //update weight
-  this.caravan.updateWeight();
+  this.Robot.updateWeight();
 
   //update progress
-  this.caravan.updateDistance();
+  this.Robot.updateDistance();
 
   //show stats
   this.ui.refreshStats();
 
   //check if everyone died
-  if(this.caravan.crew <= 0) {
-    this.caravan.crew = 0;
+  if(this.Robot.vitality <= 0) {
+    this.Robot.vitality = 0;
     this.ui.notify('Everyone died', 'negative');
     this.gameActive = false;
     return;
   }
 
   //check win game
-  if(this.caravan.distance >= OregonH.FINAL_DISTANCE) {
+  if(this.Robot.distance >= PostApoc.FINAL_DISTANCE) {
     this.ui.notify('You have returned home!', 'positive');
     this.gameActive = false;
     return;
   }
 
   //random events
-  if(Math.random() <= OregonH.EVENT_PROBABILITY) {
+  if(Math.random() <= PostApoc.EVENT_PROBABILITY) {
     this.eventManager.generateEvent();
   }
 };
 
 //pause the journey
-OregonH.Game.pauseJourney = function() {
+PostApoc.Game.pauseJourney = function() {
   this.gameActive = false;
 };
 
 //resume the journey
-OregonH.Game.resumeJourney = function() {
+PostApoc.Game.resumeJourney = function() {
   this.gameActive = true;
   this.step();
 };
 
 
 //init game
-OregonH.Game.init();
+PostApoc.Game.init();
